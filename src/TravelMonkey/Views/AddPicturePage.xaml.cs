@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using TravelMonkey.Models;
 using TravelMonkey.ViewModels;
 using Xamarin.Forms;
 
@@ -10,11 +16,12 @@ namespace TravelMonkey.Views
         {
             InitializeComponent();
 
-            BindingContext = new AddPicturePageViewModel();
+            BindingContext = new AddPicturePageViewModel(Navigation);
 
-            MessagingCenter.Subscribe<AddPicturePageViewModel>(this, Constants.PictureAddedMessage, async (vm) => await Navigation.PopModalAsync(true));
+            MessagingCenter.Subscribe<AddPicturePageViewModel>(this, Constants.PictureAddedMessage, async (vm) =>  await Navigation.PopModalAsync(true));
 
             MessagingCenter.Subscribe<AddPicturePageViewModel>(this, Constants.PictureFailedMessage, async (vm) => await DisplayAlert("Uh-oh!", "Can you hand me my glasses? Something went wrong while analyzing this image", "OK"));
+
         }
 
         private void Button_Clicked(object sender, EventArgs e)

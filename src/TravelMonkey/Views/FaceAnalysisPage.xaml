@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:effect="clr-namespace:TravelMonkey.Effects"
+             x:Class="TravelMonkey.Views.FaceAnalysisPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label" x:Key="lblStyle">
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+                <Setter Property="FontSize" Value="Medium"/>
+                <Setter Property="TextColor" Value="Black"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <yummy:PancakeView BackgroundGradientStartColor="SteelBlue"
+                       BackgroundGradientEndColor="LightGray"
+                       BackgroundGradientAngle="40">
+        <StackLayout Margin="10">
+            <Button Text="Close"
+                    Clicked="Button_Clicked"
+                    HorizontalOptions="Center"
+                    FontFamily="LatoBold"
+                    TextColor="White" />
+
+            <yummy:PancakeView BackgroundColor="White"
+                                   Margin="7"
+                                   Padding="7"
+                                   CornerRadius="10"
+                                   HasShadow="True"
+                                   Grid.Row="0">
+                <StackLayout x:Name="stackFaces">
+                    <StackLayout.Effects>
+                        <effect:SafeAreaPaddingEffect />
+                    </StackLayout.Effects>
+                    <Label Style="{StaticResource lblStyle}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="There is/are "/>
+                                <Span x:Name="personCount" FontAttributes="Bold"/>
+                                <Span Text="Person/People"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Style="{StaticResource lblStyle}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Emotion: " FontAttributes="Bold"/>
+                                <Span x:Name="personEmotion"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Style="{StaticResource lblStyle}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Gender: " FontAttributes="Bold"/>
+                                <Span x:Name="personGender"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Style="{StaticResource lblStyle}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Age: " FontAttributes="Bold"/>
+                                <Span x:Name="personAge"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Style="{StaticResource lblStyle}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Makeup: " FontAttributes="Bold"/>
+                                <Span x:Name="personMakeup"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Style="{StaticResource lblStyle}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Glasses: " FontAttributes="Bold"/>
+                                <Span x:Name="personGlasses"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
+            </yummy:PancakeView>
+        </StackLayout>
+    </yummy:PancakeView>
+</ContentPage>

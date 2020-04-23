@@ -9,6 +9,9 @@ namespace TravelMonkey.ViewModels
         private readonly TranslationService _translationService =
             new TranslationService();
 
+        private Command<string> _selectCountryCommand;
+
+
         private string _inputText;
         private Dictionary<string, string> _translations;
 
@@ -39,6 +42,18 @@ namespace TravelMonkey.ViewModels
         {
             InputText = inputText;
         });
+
+        public Command<string> SelectCountryCommand
+        {
+            get
+            {
+                return _selectCountryCommand ?? (_selectCountryCommand = new Command<string>((code) =>
+                {
+                    Application.Current.MainPage.DisplayAlert("Selected Country", "Country code : " + code, "Ok");
+                    //Navigation.PushAsync(new PrivacyPolicyPage());
+                }));
+            }
+        }
 
         private async void TranslateText()
         {

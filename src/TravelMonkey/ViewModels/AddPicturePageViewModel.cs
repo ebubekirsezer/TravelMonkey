@@ -1,23 +1,43 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Acr.UserDialogs;
+using Newtonsoft.Json;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
 using TravelMonkey.Data;
 using TravelMonkey.Models;
 using TravelMonkey.Services;
+using TravelMonkey.Views;
 using Xamarin.Forms;
 
 namespace TravelMonkey.ViewModels
 {
-    public class AddPicturePageViewModel : BaseViewModel
+    public class AddPicturePageViewModel : BaseViewModel,INotifyPropertyChanged
     {
         private readonly ComputerVisionService _computerVisionService = new ComputerVisionService();
+        public INavigation Navigation { get; set; }
 
         public bool ShowImagePlaceholder => !ShowPhoto;
         public bool ShowPhoto => _photoSource != null;
+        private string url;
+        public string Url
+        {
+            get { return url; }
+            set { url = value; }
+        }
 
         MediaFile _photo;
         StreamImageSource _photoSource;
+        List<FaceModel> faceModels = new List<FaceModel>();
+        public List<FaceModel> FaceModels
+        {
+            get => faceModels;
+            set => Set(ref faceModels, value);
+        }
         public StreamImageSource PhotoSource
         {
             get => _photoSource;
@@ -55,8 +75,9 @@ namespace TravelMonkey.ViewModels
         public Command TakePhotoCommand { get; }
         public Command AddPictureCommand { get; }
 
-        public AddPicturePageViewModel()
+        public AddPicturePageViewModel(INavigation navigation)
         {
+            this.Navigation = navigation;
             TakePhotoCommand = new Command(async () => await TakePhoto());
             AddPictureCommand = new Command(() =>
              {
@@ -73,14 +94,16 @@ namespace TravelMonkey.ViewModels
             if (result.Equals("Take photo"))
             {
                 _photo = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions { PhotoSize = PhotoSize.Small });
-
                 PhotoSource = (StreamImageSource)ImageSource.FromStream(() => _photo.GetStream());
+                Url = _photo.Path;
+
             }
             else if (result.Equals("Choose photo"))
             {
                 _photo = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions { PhotoSize = PhotoSize.Small });
 
                 PhotoSource = (StreamImageSource)ImageSource.FromStream(() => _photo.GetStream());
+                MakeAnalysisRequest(_photo.Path);
             }
             else
             {
@@ -122,6 +145,48 @@ namespace TravelMonkey.ViewModels
             finally
             {
                 IsPosting = false;
+            }
+        }
+
+        public async void MakeAnalysisRequest(string imageFilePath)
+        {
+
+            HttpClient client = new HttpClient();
+
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ApiKeys.FaceDetectionApiKey);
+
+            string requestParameters = "returnFaceId=true&returnFaceLandmarks=false" +
+               "&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses," +
+               "emotion,hair,makeup,occlusion,accessories,blur,exposure,noise";
+
+            string uri = ApiKeys.FaceDetectionEndPoint + "?" + requestParameters;
+            HttpResponseMessage response;
+            byte[] byteData = GetImageAsByteArray(imageFilePath);
+
+            using (ByteArrayContent content = new ByteArrayContent(byteData))
+            {
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                response = await client.PostAsync(uri, content);
+                string contentString = await response.Content.ReadAsStringAsync();
+
+                //Display Result
+                faceModels = JsonConvert.DeserializeObject<List<FaceModel>>(contentString);
+                if (faceModels.Count != 0)
+                {
+                    var res =await Application.Current.MainPage.DisplayAlert("Hmm I see a Face", "Do you want me to Analyze Face?", "OK", "CANCEL");
+                    if (res)
+                        await Navigation.PushModalAsync(new FaceAnalysisPage(faceModels));
+                    //var a = faceModels[0].faceAttributes.gender;
+                }
+            }
+        }
+        public byte[] GetImageAsByteArray(string imageFilePath)
+        {
+            using (FileStream fileStream =
+                new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+            {
+                BinaryReader binaryReader = new BinaryReader(fileStream);
+                return binaryReader.ReadBytes((int)fileStream.Length);
             }
         }
     }

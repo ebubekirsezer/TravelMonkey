@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:effect="clr-namespace:TravelMonkey.Effects" xmlns:converters="clr-namespace:TravelMonkey.Converters" xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" x:Class="TravelMonkey.Views.TranslationResultPage" BackgroundColor="#F3F3F3">
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:effect="clr-namespace:TravelMonkey.Effects"
+             xmlns:converters="clr-namespace:TravelMonkey.Converters"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             x:Class="TravelMonkey.Views.TranslationResultPage"
+             BackgroundColor="#F3F3F3">
     <ContentPage.Resources>
         <converters:LanguageCodeToDescriptionConverter x:Key="LanguageCodeToDescriptionConverter" />
     </ContentPage.Resources>
@@ -14,7 +20,7 @@
             <Entry Margin="15,0" Text="{Binding InputText, Mode=OneWay}" ReturnCommand="{Binding TranslateTextCommand}" ReturnCommandParameter="{Binding Text, Source={RelativeSource Mode=Self}}" FontSize="20" FontFamily="LatoRegular" BackgroundColor="Transparent" Placeholder="Enter text to translate" />
 
             <ScrollView>
-                <StackLayout BindableLayout.ItemsSource="{Binding Translations}" Padding="10">
+                <StackLayout BindableLayout.ItemsSource="{Binding Translations}" Padding="10" x:Name="CountryList">
                     <BindableLayout.EmptyViewTemplate>
                         <DataTemplate>
                             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
@@ -25,10 +31,12 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <yummy:PancakeView BackgroundColor="White" Margin="7" CornerRadius="10" HasShadow="True">
-                                <Grid Margin="10">
+                                <Grid Margin="10"
+                                      x:Name="countryGrid">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="0.17*" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Grid.RowDefinitions>
@@ -38,6 +46,18 @@
                                     <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Source="{Binding Key, StringFormat='{0}.png'}" WidthRequest="40" HorizontalOptions="Start" />
                                     <Label Grid.Column="1" Grid.Row="0" Text="{Binding Key, Converter={StaticResource LanguageCodeToDescriptionConverter}, ConverterParameter={Binding Key}}" FontFamily="LatoBold" FontSize="Small" VerticalOptions="End" />
                                     <Label Grid.Column="1" Grid.Row="1" Text="{Binding Value}" FontFamily="LatoRegular" FontSize="20" />
+                                    <Label  Text="&#xf061;"
+                                            FontFamily="FontAwesomeSolid"
+                                            FontSize="Medium"
+                                            TextColor="Black"
+                                            Grid.Column="2"
+                                            BindingContext="{Binding Key}"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="Country_Tapped"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
                                 </Grid>
                             </yummy:PancakeView>
                         </DataTemplate>

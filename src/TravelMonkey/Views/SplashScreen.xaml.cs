@@ -61,7 +61,7 @@ namespace TravelMonkey.Views
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Application.Current.MainPage = new MainPage();
+                Application.Current.MainPage = new NavigationPage(new MainPage());
             });
         }
     }

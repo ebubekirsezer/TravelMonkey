@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TravelMonkey.Views.TextAnalysisPage"
+             xmlns:effect="clr-namespace:TravelMonkey.Effects"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             BackgroundColor="#F3F3F3">
+    <yummy:PancakeView BackgroundGradientStartColor="SteelBlue"
+                       BackgroundGradientEndColor="LightGray"
+                       BackgroundGradientAngle="40">
+        <StackLayout Margin="10">
+            <Button Text="Close"
+                    Clicked="Button_Clicked"
+                    HorizontalOptions="Center"
+                    FontFamily="LatoBold"
+                    TextColor="White" />
+
+            <Image x:Name="countryImage"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Aspect="AspectFit"
+                   WidthRequest="75"
+                   HeightRequest="75"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <yummy:PancakeView BackgroundColor="White"
+                                   HeightRequest="50"
+                                   Margin="7"
+                                   Padding="7"
+                                   CornerRadius="10"
+                                   HasShadow="True"
+                                   Grid.Row="0">
+                    <StackLayout Orientation="Horizontal">
+                        <StackLayout.Effects>
+                            <effect:SafeAreaPaddingEffect />
+                        </StackLayout.Effects>
+                        <Label TextColor="Black"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"
+                               FontSize="Medium">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Sentimental Analysis Score: " x:Name="lblTitleScore" FontAttributes="Bold"/>
+                                    <Span x:Name="lblScore"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                </yummy:PancakeView>
+
+
+                <yummy:PancakeView BackgroundColor="White"
+                                   VerticalOptions="FillAndExpand"
+                                   Margin="7"
+                                   Padding="7"
+                                   CornerRadius="10"
+                                   HasShadow="True"
+                                   Grid.Row="1">
+                    <StackLayout>
+                        <Label TextColor="Black"
+                               Text="Key Phrases: "
+                               x:Name="lblTitlePhrase"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"
+                               FontSize="Medium"/>
+                        <StackLayout Orientation="Horizontal"
+                                 BindableLayout.ItemsSource="{Binding .}"
+                                 x:Name="stackPhrases">
+                            <StackLayout.Effects>
+                                <effect:SafeAreaPaddingEffect />
+                            </StackLayout.Effects>
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label TextColor="Black"
+                                       Text="{Binding KeyPhrase}"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Start"
+                                       FontSize="Medium"/>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </StackLayout>
+                </yummy:PancakeView>
+            </Grid>
+        </StackLayout>
+    </yummy:PancakeView>
+</ContentPage>
