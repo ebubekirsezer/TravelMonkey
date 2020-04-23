@@ -168,5 +168,7 @@
     <BundleResource Include="Resources\es.png" />
     <BundleResource Include="Resources\TravelMonkey.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BundleResource Include="Resources\tr.png" />
+  </ItemGroup>
 </Project>
